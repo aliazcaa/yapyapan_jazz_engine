@@ -38,9 +38,9 @@
         seed: 12345,             // controls the grid: initial layout, word choice, births
         fontSeed: 808,           // controls ONLY the font-size jitter pattern — independent of seed
         highlightSeed: 5555,     // controls ONLY which cells get highlighted + what color — independent of the above
-        cellSize: 80,            // px per grid cell — bigger = fewer, more legible cells
-        density: 0.6,            // 0–1, initial % of live cells
-        speed: 6,                // frames per generation step — lower = faster life
+        cellSize: 75,            // px per grid cell — bigger = fewer, more legible cells
+        density: 0.5,            // 0–1, initial % of live cells
+        speed: 7,                // frames per generation step — lower = faster life
         glitchIntensity: 0.2,    // 0–1, how aggressively crowded cells corrupt
         fontJitter: 0.2,         // 0–1, how much each cell's font size randomly varies
         highlightChance: 0.6,    // 0–1, chance a newly-born cell gets a highlight box
