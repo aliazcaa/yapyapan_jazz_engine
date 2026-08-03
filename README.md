@@ -1,4 +1,5 @@
 #YapYapan_JAZZ_engine
+
 Inspired by Conway's Game of Life, where every living cell is a word, pulled live from
 whatever is typed into the field at the top of the page. Cells that are
 about to die (per standard Life rules) glitch — bleeding characters from a
