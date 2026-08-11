@@ -130,8 +130,8 @@ function playHit(voiceName, velocity = 1) {
     let gainNode = audioCtx.createGain();
 
     source.buffer = buffer;
-    source.playbackRate.value = 1 + (Math.random() - 0.5) * 0.8; // ±3% pitch jitter
-    gainNode.gain.value = velocity * (0.85 + Math.random() * 0.85); // small gain jitter
+    source.playbackRate.value = 1 + (Math.random() - 0.5) * 0.3; // ±3% pitch jitter
+    gainNode.gain.value = velocity * (0.85 + Math.random() * 0.5); // small gain jitter
 
     source.connect(gainNode).connect(audioCtx.destination);
     source.start(0);
