@@ -18,7 +18,7 @@
 const KIT_FILES = {
     kick:        ['assets/audio/00_Kick_04_Big.wav', 'assets/audio/00_Kick_05_Big.wav'],
     snare:       ['assets/audio/01_Snare_20_G.wav', 'assets/audio/01_Snare_21_G.wav', 'assets/audio/01_Snare_22_G.wav', 'assets/audio/02_Snare_Flam_01_E.wav', 'assets/audio/02_Snare_Roll_01_Short.wav'],
-    rim:         ['assets/audio/03_Misc_08_Rim.wav'],
+    rim:         ['assets/audio/03_Rim.wav', '03_Rim_Flam.wav'],
     hihatClosed: ['assets/audio/04_Closed_Hat_01_Clean.wav', 'assets/audio/04_Closed_Hat_09_Hard.wav', 'assets/audio/04_Closed_Hat_10_Hard.wav', 'assets/audio/04_Closed_Hat_13_Pedal.wav', 'assets/audio/04_Closed_Hat_14_Pedal.wav'],
     hihatOpen:   ['assets/audio/05_Open_Hat_01_Full_Open.wav', 'assets/audio/05_Open_Hat_05_Hard.wav', 'assets/audio/05_Open_Hat_16_Open_and_Close.wav', 'assets/audio/05_Open_Hat_17_Roll_and_Close.wav'],
     tom:         ['assets/audio/08_Tom_02_Low_C.wav', 'assets/audio/08_Tom_06_Low_E.wav', 'assets/audio/08_Tom_19_Low_Flam_A#.wav', 'assets/audio/09_Tom_07_Medium_A.wav', 'assets/audio/09_Tom_08_Medium_A.wav', 'assets/audio/09_Tom_21_Medium_Flam_B.wav'],
