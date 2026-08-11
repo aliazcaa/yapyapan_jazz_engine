@@ -160,7 +160,7 @@ function handleDrumKeydown(e) {
 
     // Fast typing (small gap) → louder hits. Slow/deliberate typing → softer.
     // Tune the 30/400 gap range and 0.4/1.0 velocity range to taste.
-    let velocity = mapRange(gap, 20, 600, 1.0, 0.2);
+    let velocity = mapRange(gap, 30, 600, 1.0, 0.4);
     velocity = Math.max(0.4, Math.min(1.0, velocity));
 
     let voice = voiceForKey(e.key);
