@@ -18,7 +18,7 @@
 const KIT_FILES = {
     kick:        ['assets/audio/00_Kick_04_Big.wav', 'assets/audio/00_Kick_05_Big.wav'],
     snare:       ['assets/audio/01_Snare_20_G.wav', 'assets/audio/01_Snare_21_G.wav', 'assets/audio/01_Snare_22_G.wav', 'assets/audio/02_Snare_Flam_01_E.wav', 'assets/audio/02_Snare_Roll_01_Short.wav'],
-    rim:         ['assets/audio/03_Rim.wav', '03_Rim_Flam.wav'],
+    rim:         ['assets/audio/03_Rim.wav', 'assets/audio/03_Rim_Flam.wav'],
     hihatClosed: ['assets/audio/04_Closed_Hat_01_Clean.wav', 'assets/audio/04_Closed_Hat_09_Hard.wav', 'assets/audio/04_Closed_Hat_10_Hard.wav', 'assets/audio/04_Closed_Hat_13_Pedal.wav', 'assets/audio/04_Closed_Hat_14_Pedal.wav'],
     hihatOpen:   ['assets/audio/05_Open_Hat_01_Full_Open.wav', 'assets/audio/05_Open_Hat_05_Hard.wav', 'assets/audio/05_Open_Hat_16_Open_and_Close.wav', 'assets/audio/05_Open_Hat_17_Roll_and_Close.wav'],
     tom:         ['assets/audio/08_Tom_02_Low_C.wav', 'assets/audio/08_Tom_06_Low_E.wav', 'assets/audio/08_Tom_19_Low_Flam_A#.wav', 'assets/audio/09_Tom_07_Medium_A.wav', 'assets/audio/09_Tom_08_Medium_A.wav', 'assets/audio/09_Tom_21_Medium_Flam_B.wav'],
@@ -160,7 +160,7 @@ function handleDrumKeydown(e) {
 
     // Fast typing (small gap) → louder hits. Slow/deliberate typing → softer.
     // Tune the 30/400 gap range and 0.4/1.0 velocity range to taste.
-    let velocity = mapRange(gap, 30, 600, 1.0, 0.4);
+    let velocity = mapRange(gap, 30, 400, 1.0, 0.4);
     velocity = Math.max(0.4, Math.min(1.0, velocity));
 
     let voice = voiceForKey(e.key);
@@ -172,73 +172,4 @@ window.addEventListener('load', function () {
     if (input) {
         input.addEventListener('keydown', handleDrumKeydown);
     }
-});
-
-// ═══════════════════════════════════════════════════════════════
-// ---- 7. Mouse-driven trigger: X selects the voice, Y sets velocity ----
-// X splits the screen into one zone per kit voice (in KIT_FILES order) —
-// moving the mouse left to right scans through kick → snare → rim →
-// hihatClosed → hihatOpen → tom → ride → crash. A hit only fires when the
-// cursor crosses INTO a new zone (not on every pixel of movement), so
-// dragging across the screen feels like scrubbing over a row of pads
-// rather than flooding you with sound. Pressing down always fires
-// immediately regardless of zone, satisfying "click triggers the sample
-// itself" even without any movement at all.
-// Y sets how loud whatever fires next is — top of the screen (y=0) is
-// loudest, bottom is softest, recalculated fresh on every trigger, so
-// moving vertically while dragging continuously changes hit volume.
-// ═══════════════════════════════════════════════════════════════
-
-const VOICE_ORDER = Object.keys(KIT_FILES); // scan order across the X axis, e.g. kick, snare, rim, ...
-
-let mouseIsDown = false;
-let lastVoiceIndex = null;
-
-function isOverWordInput(x, y) {
-    let el = document.getElementById('word-input');
-    if (!el) return false;
-    let r = el.getBoundingClientRect();
-    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
-}
-
-function velocityForY(y, height) {
-    // top (y=0) = loudest, bottom (y=height) = softest
-    return mapRange(y, 0, height, 1.0, 0.3);
-}
-
-function triggerFromMouse(x, y, forceRetrigger) {
-    if (isOverWordInput(x, y)) return; // don't fire drum hits while interacting with the text field
-
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-
-    let zoneWidth = window.innerWidth / VOICE_ORDER.length;
-    let index = Math.floor(x / zoneWidth);
-    index = Math.max(0, Math.min(VOICE_ORDER.length - 1, index));
-
-    // Only re-trigger on an actual zone change, UNLESS this is a fresh
-    // mousedown — a click should always sound, even in the same spot twice.
-    if (!forceRetrigger && index === lastVoiceIndex) return;
-    lastVoiceIndex = index;
-
-    let voice = VOICE_ORDER[index];
-    let velocity = velocityForY(y, window.innerHeight);
-    playHit(voice, velocity);
-}
-
-window.addEventListener('load', function () {
-    window.addEventListener('mousedown', function (e) {
-        mouseIsDown = true;
-        triggerFromMouse(e.clientX, e.clientY, true);
-    });
-
-    window.addEventListener('mouseup', function () {
-        mouseIsDown = false;
-    });
-
-    window.addEventListener('mousemove', function (e) {
-        if (!mouseIsDown) return; // only scans while actively held/dragging
-        triggerFromMouse(e.clientX, e.clientY, false);
-    });
 });
