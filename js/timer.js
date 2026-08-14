@@ -7,7 +7,7 @@
 // Remove the console.log lines once this is confirmed working.
 // ═══════════════════════════════════════════════════════════════
 
-const SESSION_LIMIT_SECONDS = 1 * 60; // currently 1 minute for testing
+const SESSION_LIMIT_SECONDS = 15 * 60; // currently 15 minute for testing
 const REMINDER_MESSAGE = "Now get back to work! Enough for procrastinating :)";
 
 let elapsedSeconds = 0;
