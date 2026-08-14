@@ -173,3 +173,72 @@ window.addEventListener('load', function () {
         input.addEventListener('keydown', handleDrumKeydown);
     }
 });
+
+// ═══════════════════════════════════════════════════════════════
+// ---- 7. Mouse-driven trigger: X selects the voice, Y sets velocity ----
+// X splits the screen into one zone per kit voice (in KIT_FILES order) —
+// moving the mouse left to right scans through kick → snare → rim →
+// hihatClosed → hihatOpen → tom → ride → crash. A hit only fires when the
+// cursor crosses INTO a new zone (not on every pixel of movement), so
+// dragging across the screen feels like scrubbing over a row of pads
+// rather than flooding you with sound. Pressing down always fires
+// immediately regardless of zone, satisfying "click triggers the sample
+// itself" even without any movement at all.
+// Y sets how loud whatever fires next is — top of the screen (y=0) is
+// loudest, bottom is softest, recalculated fresh on every trigger, so
+// moving vertically while dragging continuously changes hit volume.
+// ═══════════════════════════════════════════════════════════════
+
+const VOICE_ORDER = Object.keys(KIT_FILES); // scan order across the X axis, e.g. kick, snare, rim, ...
+
+let mouseIsDown = false;
+let lastVoiceIndex = null;
+
+function isOverWordInput(x, y) {
+    let el = document.getElementById('word-input');
+    if (!el) return false;
+    let r = el.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+}
+
+function velocityForY(y, height) {
+    // top (y=0) = loudest, bottom (y=height) = softest
+    return mapRange(y, 0, height, 1.0, 0.3);
+}
+
+function triggerFromMouse(x, y, forceRetrigger) {
+    if (isOverWordInput(x, y)) return; // don't fire drum hits while interacting with the text field
+
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    let zoneWidth = window.innerWidth / VOICE_ORDER.length;
+    let index = Math.floor(x / zoneWidth);
+    index = Math.max(0, Math.min(VOICE_ORDER.length - 1, index));
+
+    // Only re-trigger on an actual zone change, UNLESS this is a fresh
+    // mousedown — a click should always sound, even in the same spot twice.
+    if (!forceRetrigger && index === lastVoiceIndex) return;
+    lastVoiceIndex = index;
+
+    let voice = VOICE_ORDER[index];
+    let velocity = velocityForY(y, window.innerHeight);
+    playHit(voice, velocity);
+}
+
+window.addEventListener('load', function () {
+    window.addEventListener('mousedown', function (e) {
+        mouseIsDown = true;
+        triggerFromMouse(e.clientX, e.clientY, true);
+    });
+
+    window.addEventListener('mouseup', function () {
+        mouseIsDown = false;
+    });
+
+    window.addEventListener('mousemove', function (e) {
+        if (!mouseIsDown) return; // only scans while actively held/dragging
+        triggerFromMouse(e.clientX, e.clientY, false);
+    });
+});
